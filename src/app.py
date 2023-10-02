@@ -45,8 +45,17 @@ with prediction:
     
     #set up the form 
     with form:
-        left_col.write("Inputs part 1:")
-        date = st.date_input("Select a Date")
+        date = left_col.date_input("Select a Date")
+          # Extract day, month, and year from the selected date
+        selected_date = pd.to_datetime(date)
+        day = selected_date.day
+        month = selected_date.month
+        year = selected_date.year
+
+        # Format the extracted values as strings
+        day_str = str(day)
+        month_str = str(month)
+        year_str = str(year)
         store_nbr = left_col.number_input("Enter store number")
         product = left_col.selectbox("Enter your product name:",['LADIESWEAR', 'DAIRY', 'CLEANING', 'EGGS' ,'PET SUPPLIES' ,'AUTOMOTIVE',
                                     'HOME AND KITCHEN I' ,'BREAD/BAKERY' ,'MEATS' ,'PREPARED FOODS', 'BOOKS',
@@ -82,23 +91,44 @@ if submitted:
     with prediction:
         #formate input 
         input_dict  ={
-        "Store Number": [store_nbr],
-            "Cluster Number": [cluster],
-            "Product": [product],
-            "State": [state],
-            "Store Type": [stores_type],
-            "Date": [date],
-            "onpromotion": [onpromotion],
-            "oil_prices": [oil_prices],
-            "city": [city],
+        "store_nbr": [store_nbr],
+        "cluster": [cluster],
+        "product": [product],
+        "state": [state],
+        "stores_type": [stores_type],
+        "onpromotion": [onpromotion],
+        "oil_prices": [oil_prices],
+        "city": [city],
+        "year": [year],  # Set default year value
+        "month": [month],  # Use the extracted month
+        "day": [day],  # Use the extracted day
         }
+        
     
 
         # Display input data as a dataframe
         input_data = pd.DataFrame.from_dict(input_dict)
         
         # Encode the categorical using one hot encoder
-   
+        # Specify the categorical columns to one-hot encode
+        train_columns = ['product', 'city', 'state', 'stores_type']
 
-    # Perform your prediction or analysis here if needed
+        # Perform one-hot encoding
+        encoded_input_data = pd.get_dummies(input_data, columns=train_columns)
 
+        # Get a list of columns that were not one-hot encoded
+        remaining_columns = [col for col in input_data.columns if col not in train_columns]
+
+        # Add the remaining columns to the encoded_train DataFrame
+        for col in remaining_columns:
+            encoded_input_data[col] = input_data[col]
+
+        
+        
+        # Make predictions
+        pred = model.predict(encoded_input_data)  # Use the same encoded_input_data as in your code
+
+        # Display the prediction
+        st.write("Predicted Sales:", pred)
+        
+        

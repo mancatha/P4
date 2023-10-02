@@ -55,12 +55,11 @@ with prediction:
                                     'DELI' ,'SCHOOL AND OFFICE SUPPLIES' ,'PRODUCE' ,'LINGERIE',
                                     'LIQUOR,WINE,BEER' ,'SEAFOOD', 'PERSONAL CARE', 'GROCERY II', 'CELEBRATION',
                                     'BEVERAGES', 'BEAUTY', 'PLAYERS AND ELECTRONICS' ,'POULTRY'])
-        sales = left_col.number_input("Enter amount of sales")
         onpromotion = left_col.number_input("Enter the onpromotion price")
         
         
         # set the right column 
-        right_col.write("Inputs part 2:")
+      
         
         oil_prices = right_col.number_input("Enter the current oil prices")
         
@@ -89,7 +88,6 @@ if submitted:
             "State": [state],
             "Store Type": [stores_type],
             "Date": [date],
-            "Amount": [sales],
             "onpromotion": [onpromotion],
             "oil_prices": [oil_prices],
             "city": [city],

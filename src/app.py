@@ -1,6 +1,6 @@
 import streamlit as st 
 import pandas as pd
-import pickle
+import joblib
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 import warnings
@@ -8,20 +8,20 @@ import os
 warnings.filterwarnings("ignore", category=UserWarning, message="Trying to unpickle estimator")
 #variables and constants
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
-ml_core_fp = os.path.join(DIRPATH, "export", "ml.pkl")
+ml_core_fp = os.path.join(DIRPATH, "export", "ml.joblib")
 
 #useful functions
 st.cache_resource()
 def  load_ml_components(fp):
     "load the ml components to re-use in app"
     with open(fp, 'rb') as file:
-        obj = pickle.load(file)
+        obj = joblib.load(file)
         return obj
 # execution    
 ml_components_dict = load_ml_components(fp = ml_core_fp)
 
 # Specify the path to your saved model
-rf_model_filename = 'sales_dt_model.pkl'
+rf_model_filename = 'sales_dt_model.joblib'
 sales_rf_path = os.path.join(DIRPATH, rf_model_filename)
 # Specify the file path where the model is saved
 

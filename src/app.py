@@ -2,15 +2,33 @@ import streamlit as st
 import pandas as pd
 import pickle
 import numpy as np
-from sklearn.ensemble import RandomForestRegressor 
+from sklearn.ensemble import RandomForestRegressor
 import warnings
+import os 
 warnings.filterwarnings("ignore", category=UserWarning, message="Trying to unpickle estimator")
+#variables and constants
+DIRPATH = os.path.dirname(os.path.realpath(__file__))
+ml_core_fp = os.path.join(DIRPATH, "export", "ml.pkl")
 
+#useful functions
+st.cache_resource()
+def  load_ml_components(fp):
+    "load the ml components to re-use in app"
+    with open(fp, 'rb') as file:
+        obj = pickle.load(file)
+        return obj
+# execution    
+ml_components_dict = load_ml_components(fp = ml_core_fp)
+
+# Specify the path to your saved model
+rf_model_filename = 'sales_dt_model.pkl'
+sales_rf_path = os.path.join(DIRPATH, rf_model_filename)
 # Specify the file path where the model is saved
-# Load the model from the saved file
-model_filename = "C:/Users/manca/OneDrive/Desktop/P41/P4/sales_pred_model.pkl" # Specify the correct file path
-with open(model_filename, 'rb') as model_file:
-    model = pickle.load(model_file)
+
+
+# Load the model
+model = ml_components_dict["models"]
+
 
 # Set the page title and add some style
 st.set_page_config(
@@ -126,9 +144,10 @@ if submitted:
         
         
         # Make predictions
-        pred = model.predict(encoded_input_data)  # Use the same encoded_input_data as in your code
+          #Make the prediction
+        model_output = model.predict(input_data)   # Use the same encoded_input_data as in your code
 
         # Display the prediction
-        st.write("Predicted Sales:", pred)
+        st.write("Predicted Sales:", model_output)
         
         
